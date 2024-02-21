@@ -840,6 +840,23 @@ impl Emitter {
             };
             gpu.pos += vec4(cpu.velocity.x, cpu.velocity.y, cpu.angular_velocity, 0.0) * dt;
 
+            // Screen edge teleportation
+            let half_size = self.config.size / 2.0;
+
+            let screen_width = screen_width();
+            if gpu.pos.x < -half_size {
+                gpu.pos.x = screen_width + half_size;
+            } else if gpu.pos.x > screen_width + half_size {
+                gpu.pos.x = -half_size;
+            }
+
+            let screen_height = screen_height();
+            if gpu.pos.y < -half_size {
+                gpu.pos.y = screen_height + half_size;
+            } else if gpu.pos.y > screen_height + half_size {
+                gpu.pos.y = -half_size;
+            }
+
             gpu.pos.w = cpu.initial_size
                 * self
                     .batched_size_curve
